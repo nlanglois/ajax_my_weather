@@ -7,6 +7,53 @@
     <title>jquery AJAX Temperature API Example</title>
 
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <style type="text/css">
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #212121;
+            font-size: 18px;
+        }
+
+        .italic {
+            font-style: italic;
+            font-weight: 700;
+        }
+
+        .wrapper {
+            width: 400px;
+            margin: 30px auto 0 auto;
+            text-align: center;
+        }
+
+        #result {
+            height: 50px;
+            width: 65px;
+            font-size: 20px;
+            line-height: 50px;
+            margin: 20px auto 0 auto;
+            text-align: center;
+            border-radius: 10%;
+            font-weight: 700;
+            background-color: #16a085;
+            color: #fff;
+        }
+
+        #showTemp {
+            margin: 30px auto 0 auto;
+            width: 170px; height: 50px;
+            background: #E74C3C;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 17px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+
+        #showTemp:hover {
+            cursor: pointer;
+        }
+    </style>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -23,7 +70,7 @@
 
                         api_url = 'http://api.openweathermap.org/data/2.5/weather?lat=' +
                                 lat + '&lon=' +
-                                lon + '&units=metric&appid=44db6a862fba0b067b1930da0d769e98';
+                                lon + '&units=metric&appid=c6c6eb3a8c0772a9a1ca60fc861dd04f';
 
 
                         $.ajax({
@@ -38,7 +85,7 @@
                 });
 
             } else {
-                alert('Your browser doesnt support geolocation. Sorry.');
+                alert('Your browser doesn\'t support geo location. Sorry.');
             }
 
         });
