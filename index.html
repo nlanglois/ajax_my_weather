@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>jquery AJAX Temperature API Example</title>
@@ -9,42 +8,6 @@
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="styles.css" rel="stylesheet" type="text/css">
 
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var lat, lon, api_url;
-
-            if ("geolocation" in navigator) {
-
-                $('#showTemp').on('click', function () {
-                    navigator.geolocation.getCurrentPosition(gotLocation);
-
-                    function gotLocation(position) {
-                        lat = position.coords.latitude;
-                        lon = position.coords.longitude;
-
-                        api_url = 'http://api.openweathermap.org/data/2.5/weather?lat=' +
-                                lat + '&lon=' +
-                                lon + '&units=metric&appid=c6c6eb3a8c0772a9a1ca60fc861dd04f';
-
-
-                        $.ajax({
-                            url : api_url,
-                            method : 'GET',
-                            success : function (data) {
-                                var tempr = data.main.temp;
-                                $('#result').text(tempr + '°');
-                            }
-                        });
-                    }
-                });
-
-            } else {
-                alert('Your browser doesn\'t support geo location. Sorry.');
-            }
-
-        });
-    </script>
 </head>
 <body>
 
@@ -56,11 +19,155 @@
     <!-- Some fancy text -->
 
     <!-- Here we will show the final result -->
-    <p id="result">? °</p>
+    <p id="result">? ° (&deg;) </p>
+
+    <p id="desc"></p>
+
+    <p class="icon"></p>
+
+    <!-- We'll drop the map of the browser's location here -->
+    <div id="map"></div>
+
+
+    <div class="state" zipcode="11111">Utah</div>
+    <div class="state" zipcode="22222">Minnesota</div>
+    <div class="state" zipcode="33333">California</div>
+    <div class="state" zipcode="44444">New Mexico</div>
+    <div class="state" zipcode="55555">Colorado</div>
+
 
     <!-- Simple button -->
     <button id="showTemp">Submit</button>
 </div>
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPJgOHNxGJmo_iwfST3fd_vPtPheiXY7g"
+        async defer></script>
+
+
+
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var lat, lon, alt, api_url;
+
+        // Does the browser (navigator) support geolocation?
+        if ("geolocation" in navigator) {
+
+            // Do all this stuff WHEN something whose ID is showTemp
+            //  is clicked
+            $('#showTemp').on('click', function() {
+
+                navigator.geolocation.getCurrentPosition(getLocation);
+
+                function getLocation(position) {
+                    lat = position.coords.latitude;
+                    lon = position.coords.longitude;
+                    //alt = position.coords.altitude;
+
+                    console.log(position);
+
+
+                    // Build our API call
+                    api_url = 'http://api.openweathermap.org/data/2.5/weather?'
+                            + 'lat=' + lat
+                            + '&lon=' + lon
+                            + '&units=metric'
+                            + '&appid=c6c6eb3a8c0772a9a1ca60fc861dd04f'
+                    ;
+
+                    console.log(api_url);
+
+
+
+                    $.ajax({
+                        url : api_url,
+                        method : 'GET',
+                        success : function(data) {
+                            var tempr = data.main.temp;
+                            $('#result').text(tempr + '°');
+                            $('#desc').text(data.weather[0].description);
+
+                            var icon = data.weather[0].icon;
+                            $('p.icon').html("<img src='http://openweathermap.org/img/w/" + icon + ".png' />");
+                        }
+                    });
+
+
+
+                } // closes our getLocation method
+
+
+
+
+
+                var map;
+                function getMap(position) {
+
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+                    var accuracy = position.coords.accuracy;
+
+                    alert("My browser's confidence in it's Geolocation is " + accuracy + ".");
+
+                    map = new google.maps.Map(document.getElementById('map'), {
+                        center: {
+                            lat: lat,
+                            lng: lon
+                        },
+                        zoom: 17,
+                        mapTypeId: 'satellite'
+                    });
+
+                    new google.maps.Marker({
+                        map: map,
+                        position: {
+                            lat: lat,
+                            lng: lon
+                        },
+                        title: "Where I am now",
+                    })
+                }
+
+                /* Start code to display Google Map on current location */
+                navigator.geolocation.getCurrentPosition(getMap);
+
+                $("div#map").show();
+
+
+            }); // Closes our on click showTemp jQuery block
+
+        } else { // Closes if browser has HTML 5 geolocation
+            alert('Your browser doesn\'t support geo location. Sorry.');
+        }
+
+
+
+
+
+
+
+        $('.state').on('click', function() {
+            // code that executes when you click on anything whose id is "state"
+
+            var zip = $(this).attr('zipcode');
+            alert("Zip code is: " + zip);
+
+        });
+
+
+    }); // Closes initial document.ready statement
+</script>
 
 </body>
 </html>
